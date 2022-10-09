@@ -2,7 +2,6 @@ const express = require("express");
 const dotenv = require("dotenv");
 const routes = require("./src/routes");
 const app = express();
-const port = 3000;
 
 app.use(express.json());
 
@@ -31,4 +30,4 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1", routes);
 
-app.listen(port, () => console.log(`app is listening on port ${port}`));
+app.listen(process.env.PORT, () => console.log(`app is listening on port ${process.env.PORT}`));
