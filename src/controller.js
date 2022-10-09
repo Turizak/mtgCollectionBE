@@ -219,7 +219,11 @@ const accountLogin = async (req, res) => {
       if (valid) {
         pool.query(queries.getAccount, [username], (error, results) => {
           if (error) throw error;
-          res.status(200).json(results.rows[0]);
+          const token ={
+            token: functions.generateJWT(results.rows[0]),
+            account_id: results.rows[0].account_id
+          }
+          res.status(200).json(token);
         });
       } else {
         res.status(400).json({ result: `Account not found!` });

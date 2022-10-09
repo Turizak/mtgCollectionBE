@@ -1,4 +1,4 @@
-const getAccount = "SELECT account_id FROM account WHERE username = $1"
+const getAccount = "SELECT account_id, first_name, last_name FROM account WHERE username = $1"
 const checkAccountExist = "SELECT * FROM account WHERE username = $1";
 const checkPassword = "SELECT password FROM account WHERE username = $1";
 const createAccount =  "INSERT INTO account (first_name, last_name, username, password) VALUES ($1, $2, $3, $4)";

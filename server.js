@@ -1,9 +1,12 @@
 const express = require("express");
+const dotenv = require("dotenv");
 const routes = require("./src/routes");
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+
+dotenv.config();
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
