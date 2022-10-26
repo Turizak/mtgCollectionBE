@@ -59,9 +59,7 @@ const generateJWT = (account) => {
 };
 
 const verifyJWT = async (token) => {
-  let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
   let jwtSecretKey = process.env.JWT_SECRET_KEY;
-
   const verified = jwt.verify(token, jwtSecretKey);
   if (verified) return verified;
   else return null;
