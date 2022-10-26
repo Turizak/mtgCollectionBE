@@ -1,11 +1,17 @@
 const axios = require("axios");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const moment = require('moment')
+const moment = require("moment");
 
-const updateAllPrices = async (account_id) => {
+const updateAllPrices = async (token) => {
+  const headers = {
+    "Content-type": "application/json",
+    Authorization: `${token}`,
+  };
   const cards = await axios
-    .get(`http://localhost:3000/api/v1/account/${account_id}/cards`)
+    .get(`http://localhost:3000/api/v1/account/cards`, {
+      headers: headers,
+    })
     .then((response) => response.data);
 
   for (let card of cards) {
@@ -14,18 +20,20 @@ const updateAllPrices = async (account_id) => {
       .then((response) => response.data);
 
     await axios.patch(
-      `http://localhost:3000/api/v1/account/${account_id}/cards/${card.scry_id}`,
+      `http://localhost:3000/api/v1/account/cards/${card.scry_id}`,
       {
         price: scryData.prices.usd,
       },
       {
-        headers: { "Content-type": "application/json" },
+        headers: headers,
       }
     );
   }
 
   const newData = await axios
-    .get(`http://localhost:3000/api/v1/account/${account_id}/cards`)
+    .get(`http://localhost:3000/api/v1/account/cards`, {
+      headers: headers,
+    })
     .then((response) => response.data);
 
   return newData;
@@ -43,15 +51,25 @@ const generateJWT = (account) => {
     time: moment.now().valueOf(),
     account_id: account.account_id,
     first_name: account.first_name,
-    last_name: account.last_name
+    last_name: account.last_name,
   };
 
   const token = jwt.sign(data, jwtSecretKey);
   return token;
 };
 
+const verifyJWT = async (token) => {
+  let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
+  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+
+  const verified = jwt.verify(token, jwtSecretKey);
+  if (verified) return verified;
+  else return null;
+};
+
 module.exports = {
   updateAllPrices,
   generatePassword,
   generateJWT,
+  verifyJWT,
 };
