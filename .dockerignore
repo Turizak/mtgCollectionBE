@@ -1,2 +1,6 @@
 node_modules
 npm-debug.log
+Dockerfile
+docker-compose.yaml
+playwright.config.ts
+tests
