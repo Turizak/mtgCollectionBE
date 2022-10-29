@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const axios = require("axios");
 const pool = require("../db");
 const queries = require("./queries");
 const functions = require("./functions");
@@ -222,9 +223,40 @@ const patchAccountCards = async (req, res) => {
 
 const updateAccountCardsPrices = async (req, res) => {
   try {
-    const token = req.headers.authorization
-    let message = await functions.updateAllPrices(token);
-    res.status(200).json(message);
+    const token = req.headers.authorization.split(" ")[1];
+    let decode = await functions.verifyJWT(token);
+    const account_id = decode.account_id;
+
+    pool.query(
+      queries.getAccountCards,
+      [account_id],
+      async (error, results) => {
+        if (error) throw error;
+
+        for (let res of results.rows) {
+          const scryData = await axios
+            .get(`https://api.scryfall.com/cards/${res.scry_id}`)
+            .then((response) => response.data);
+
+          pool.query(
+            queries.patchAccountCards,
+            [decode.account_id, res.scry_id, null, scryData.prices.usd, null],
+            (error) => {
+              if (error) throw error;
+            }
+          );
+        }
+
+        pool.query(
+          queries.getAccountCards,
+          [account_id],
+          async (error, results) => {
+            if (error) throw error;
+            res.status(200).json(results.rows);
+          }
+        );
+      }
+    );
   } catch (error) {
     res.status(403).json({ result: "Forbidden" });
   }
