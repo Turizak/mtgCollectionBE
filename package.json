@@ -16,5 +16,8 @@
     "start": "node server.js"
   },
   "author": "rk",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.27.1"
+  }
 }
