@@ -39,7 +39,7 @@ const addAccountCards = async (req, res) => {
     const account_id = decode.account_id;
     const scry_id = req.body.scry_id;
     const card_name = req.body.name;
-    const price = req.body.usd;
+    const price = req.body.price;
     const quantity = req.body.quantity;
 
     pool.query(
@@ -138,7 +138,7 @@ const updateAccountCards = async (req, res) => {
     const account_id = decode.account_id;
     const scry_id = req.params.scry;
     const card_name = req.body.name;
-    const price = req.body.usd;
+    const price = req.body.price;
     const quantity = req.body.quantity;
 
     pool.query(
