@@ -4,3 +4,7 @@ Dockerfile
 docker-compose.yaml
 playwright.config.ts
 tests
+sql
+LICENSE
+README.md
+.gitignore
