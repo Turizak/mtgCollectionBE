@@ -4,7 +4,7 @@ import { parameters } from "./constants/parameters";
 const account_id = parameters.account_id;
 const scry_id = parameters.existing_card.scry_id;
 const card_name = parameters.existing_card.card_name;
-const bad_card_name = parameters.bad_card_name;
+const bad_card_name = parameters.nonexisting_card.card_name;
 
 test.describe("GET cards tests", () => {
   test("GET Cards request should recieve all cards associated with account", async ({
