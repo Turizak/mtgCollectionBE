@@ -12,6 +12,8 @@ const updateAccountCards = "UPDATE cards SET card_name = $3, price = $4, quantit
 const patchAccountCards = "UPDATE cards SET card_name = COALESCE($3, card_name),"+
     " price = COALESCE($4, price), quantity = COALESCE($5, quantity)" +
     " WHERE account_id = $1 AND scry_id = $2"
+const deleteAccount = "DELETE FROM account WHERE account_id = $1"
+const deleteAllAccountCards = "DELETE FROM cards WHERE account_id = $1;"
 
 module.exports = {
     getAccountCards, 
@@ -25,5 +27,7 @@ module.exports = {
     getAccount,
     checkAccountExist,
     createAccount,
-    checkPassword
+    checkPassword,
+    deleteAccount,
+    deleteAllAccountCards,
 };

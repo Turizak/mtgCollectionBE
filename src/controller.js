@@ -285,8 +285,7 @@ const accountLogin = async (req, res) => {
         pool.query(queries.getAccount, [username], (error, results) => {
           if (error) throw error;
           const message = {
-            token: functions.generateJWT(results.rows[0]),
-            account_id: results.rows[0].account_id,
+            token: functions.generateJWT(results.rows[0])
           };
           res.status(200).json(message);
         });
@@ -322,6 +321,34 @@ const createAccount = async (req, res) => {
   });
 };
 
+const deleteAccount = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    let decode = await functions.verifyJWT(token);
+    const account_id = decode.account_id;
+
+    pool.query(
+      queries.deleteAllAccountCards,
+      [account_id],
+      (error) => {
+        if (error) throw error;
+        pool.query(
+          queries.deleteAccount,
+          [account_id],
+          (error, results) => {
+            if (error) throw error;
+            if (results.rowCount == 0)
+              res.status(400).json({ result: `Account not found!` });
+            else res.status(204).json({ result: `Account deleted!` });
+          }
+        );
+      }
+    );
+  } catch (error) {
+    res.status(403).json({ result: "Forbidden" });
+  }
+}
+
 module.exports = {
   getAccountCards,
   addAccountCards,
@@ -331,4 +358,5 @@ module.exports = {
   updateAccountCardsPrices,
   accountLogin,
   createAccount,
+  deleteAccount
 };
