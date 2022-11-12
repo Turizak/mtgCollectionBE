@@ -12,7 +12,7 @@ test.describe("Login tests", () => {
   test("Should send login request and recieve an auth token", async ({
     request,
   }) => {
-    const res = await request.post(`/api/v1/login`, {
+    const res = await request.post(`${parameters.routes.login}`, {
       data: {
         username: parameters.username,
         password: parameters.password,

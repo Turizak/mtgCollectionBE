@@ -1,21 +1,10 @@
 import { test, expect } from "@playwright/test";
 import { parameters } from "./constants/parameters";
+import { patchCardPrice } from "./constants/functions";
 
 const account_id = parameters.account_id;
-
 const owned_card = parameters.existing_card;
 const nonowned_card = parameters.nonexisting_card;
-
-const patchCardPrice = async (request, card, price = 0) => {
-  const data = {
-    price: card.price + price,
-  };
-  let res = await request.patch(`/api/v1/account/cards/${card.scry_id}`, {
-    data: data,
-  });
-
-  return res;
-};
 
 test.describe("PUT cards tests", () => {
   test("PATCH Cards request patches card existing in collection", async ({

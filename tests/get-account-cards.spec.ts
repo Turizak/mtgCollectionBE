@@ -10,7 +10,7 @@ test.describe("GET cards tests", () => {
   test("GET Cards request should recieve all cards associated with account", async ({
     request,
   }) => {
-    const res = await request.get(`/api/v1/account/cards`);
+    const res = await request.get(`${parameters.routes.cards}`);
     expect(res.ok()).toBeTruthy();
     const data = JSON.parse((await res.body()).toString());
     expect(data).not.toHaveLength(0);
@@ -22,7 +22,7 @@ test.describe("GET cards tests", () => {
   test("GET Cards request with ?name= query parameter should recieve that card information", async ({
     request,
   }) => {
-    const res = await request.get(`/api/v1/account/cards?name=${card_name}`);
+    const res = await request.get(`${parameters.routes.cards}?name=${card_name}`);
     expect(res.ok()).toBeTruthy();
     const data = JSON.parse((await res.body()).toString());
     expect(data).not.toBeNull();
@@ -35,7 +35,7 @@ test.describe("GET cards tests", () => {
     request,
   }) => {
     const res = await request.get(
-      `/api/v1/account/cards?name=${bad_card_name}`
+      `${parameters.routes.cards}?name=${bad_card_name}`
     );
     expect(res.status()).toEqual(400);
     const data = JSON.parse((await res.body()).toString());
