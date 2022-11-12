@@ -1,23 +1,10 @@
 import { test, expect } from "@playwright/test";
 import { parameters } from "./constants/parameters";
+import { putCard } from "./constants/functions";
 
 const account_id = parameters.account_id;
-
 const owned_card = parameters.existing_card;
 const nonowned_card = parameters.nonexisting_card;
-
-const putCard = async (request, card, price = 0, qty = 0) => {
-  const data = {
-    price: card.price + price,
-    name: card.card_name,
-    quantity: card.quantity + qty,
-  };
-  let res = await request.put(`/api/v1/account/cards/${card.scry_id}`, {
-    data: data,
-  });
-
-  return res;
-};
 
 test.describe("PUT cards tests", () => {
   test("PUT Cards request updates card existing in collection", async ({

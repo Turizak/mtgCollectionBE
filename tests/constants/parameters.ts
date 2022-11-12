@@ -20,6 +20,12 @@ const parameters = {
     price: 0.18,
     quantity: 1,
   },
+  routes: {
+    cards: '/api/v1/account/cards',
+    prices: '/api/v1/account/prices',
+    account: '/api/v1/account',
+    login: '/api/v1/login',
+  }
 };
 
 export { parameters };
