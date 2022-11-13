@@ -42,6 +42,11 @@ const addAccountCards = async (req, res) => {
     const price = req.body.price;
     const quantity = req.body.quantity;
 
+    if(price==null){
+      res.status(400).json({ result: `Card ID: ${scry_id} has no price associated with it.` });
+      return
+    }
+
     pool.query(
       queries.getAccountCardsId,
       [account_id, scry_id],
