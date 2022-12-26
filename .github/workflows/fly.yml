@@ -38,5 +38,13 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: |
+       touch .env
+       echo PORT = ${{ secrets.PORT }} >> .env
+       echo DB_PASSWORD = ${{ secrets.DB_PASSWORD }} >> .env
+       echo JWT_SECRET_KEY = ${{ secrets.JWT_SECRET_KEY }} >> .env
+       echo API_TOKEN = ${{ secrets.API_TOKEN }} >> .env
+       echo USER = ${{ secrets.USER }} >> .env
+       echo PASSWORD = ${{ secrets.PASSWORD }} >> .env
+       echo ACCOUNTID = ${{ secrets.ACCOUNTID }} >> .env
        npm install
        npx playwright test
