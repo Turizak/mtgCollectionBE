@@ -5,7 +5,7 @@ require('dotenv').config();
 const config: PlaywrightTestConfig = {
   workers: 1,
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'https://mtgbe.fly.dev',
     extraHTTPHeaders: {
       'Accept': '*/*',
       'Authorization': `Bearer ${process.env.API_TOKEN}`,
