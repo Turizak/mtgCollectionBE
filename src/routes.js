@@ -12,5 +12,6 @@ router.get("/account/prices", controller.updateAccountCardsPrices)
 router.post("/login", controller.accountLogin);
 router.post("/account/create", controller.createAccount);
 router.delete("/account/delete", controller.deleteAccount);
+router.get("/account/id", controller.getAccountById);
 
 module.exports = router;

@@ -42,9 +42,13 @@ const addAccountCards = async (req, res) => {
     const price = req.body.price;
     const quantity = req.body.quantity;
 
-    if(price==null){
-      res.status(400).json({ result: `Card ID: ${scry_id} has no price associated with it.` });
-      return
+    if (price == null) {
+      res
+        .status(400)
+        .json({
+          result: `Card ID: ${scry_id} has no price associated with it.`,
+        });
+      return;
     }
 
     pool.query(
@@ -290,7 +294,7 @@ const accountLogin = async (req, res) => {
         pool.query(queries.getAccount, [username], (error, results) => {
           if (error) throw error;
           const message = {
-            token: functions.generateJWT(results.rows[0])
+            token: functions.generateJWT(results.rows[0]),
           };
           res.status(200).json(message);
         });
@@ -332,27 +336,40 @@ const deleteAccount = async (req, res) => {
     let decode = await functions.verifyJWT(token);
     const account_id = decode.account_id;
 
-    pool.query(
-      queries.deleteAllAccountCards,
-      [account_id],
-      (error) => {
+    pool.query(queries.deleteAllAccountCards, [account_id], (error) => {
+      if (error) throw error;
+      pool.query(queries.deleteAccount, [account_id], (error, results) => {
         if (error) throw error;
-        pool.query(
-          queries.deleteAccount,
-          [account_id],
-          (error, results) => {
-            if (error) throw error;
-            if (results.rowCount == 0)
-              res.status(400).json({ result: `Account not found!` });
-            else res.status(204).json({ result: `Account deleted!` });
-          }
-        );
-      }
-    );
+        if (results.rowCount == 0)
+          res.status(400).json({ result: `Account not found!` });
+        else res.status(200).json({ result: `Account deleted!` });
+      });
+    });
   } catch (error) {
     res.status(403).json({ result: "Forbidden" });
   }
-}
+};
+
+const getAccountById = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    let decode = await functions.verifyJWT(token);
+    const account_id = decode.account_id;
+
+    pool.query(queries.getAccountById, [account_id], (error, results) => {
+      if (error) throw error;
+      if (results.rowCount == 0) {
+        res.status(400).json({ result: `Account not found!` });
+      } else res.status(200).json({
+        username: results.rows[0].username,
+        firstName: results.rows[0].first_name,
+        lastName: results.rows[0].last_name
+      });
+    });
+  } catch (error) {
+    res.status(403).json({ result: "Forbidden" });
+  }
+};
 
 module.exports = {
   getAccountCards,
@@ -363,5 +380,6 @@ module.exports = {
   updateAccountCardsPrices,
   accountLogin,
   createAccount,
-  deleteAccount
+  deleteAccount,
+  getAccountById
 };
