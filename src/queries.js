@@ -1,4 +1,5 @@
-const getAccount = "SELECT account_id, first_name, last_name FROM account WHERE username = $1"
+const getAccount = "SELECT account_id, first_name, last_name, username FROM account WHERE username = $1"
+const getAccountById = "SELECT account_id, first_name, last_name, username FROM account WHERE account_id = $1"
 const checkAccountExist = "SELECT * FROM account WHERE username = $1";
 const checkPassword = "SELECT password FROM account WHERE username = $1";
 const createAccount =  "INSERT INTO account (first_name, last_name, username, password) VALUES ($1, $2, $3, $4)";
@@ -30,4 +31,5 @@ module.exports = {
     checkPassword,
     deleteAccount,
     deleteAllAccountCards,
+    getAccountById,
 };
