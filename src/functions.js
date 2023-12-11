@@ -17,7 +17,7 @@ const generateJWT = (account) => {
     last_name: account.last_name,
   };
 
-  const token = jwt.sign(data, jwtSecretKey);
+  const token = jwt.sign(data, jwtSecretKey, {expiresIn: '2h'});
   return token;
 };
 
