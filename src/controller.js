@@ -28,7 +28,7 @@ const getAccountCards = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(403).json({ result: "Forbidden" });
+    res.status(406).json({ result: "Unauthorized" });
   }
 };
 
@@ -43,11 +43,9 @@ const addAccountCards = async (req, res) => {
     const quantity = req.body.quantity;
 
     if (price == null) {
-      res
-        .status(400)
-        .json({
-          result: `Card ID: ${scry_id} has no price associated with it.`,
-        });
+      res.status(400).json({
+        result: `Card ID: ${scry_id} has no price associated with it.`,
+      });
       return;
     }
 
@@ -105,7 +103,7 @@ const addAccountCards = async (req, res) => {
       }
     );
   } catch (error) {
-    res.status(403).json({ result: "Forbidden" });
+    res.status(406).json({ result: "Unauthorized" });
   }
 };
 
@@ -136,7 +134,7 @@ const removeAccountCards = async (req, res) => {
       }
     );
   } catch (error) {
-    res.status(403).json({ result: "Forbidden" });
+    res.status(406).json({ result: "Unauthorized" });
   }
 };
 
@@ -181,7 +179,7 @@ const updateAccountCards = async (req, res) => {
       }
     );
   } catch (error) {
-    res.status(403).json({ result: "Forbidden" });
+    res.status(406).json({ result: "Unauthorized" });
   }
 };
 
@@ -226,7 +224,7 @@ const patchAccountCards = async (req, res) => {
       }
     );
   } catch (error) {
-    res.status(403).json({ result: "Forbidden" });
+    res.status(406).json({ result: "Unauthorized" });
   }
 };
 
@@ -267,7 +265,7 @@ const updateAccountCardsPrices = async (req, res) => {
       }
     );
   } catch (error) {
-    res.status(403).json({ result: "Forbidden" });
+    res.status(406).json({ result: "Unauthorized" });
   }
 };
 
@@ -293,8 +291,10 @@ const accountLogin = async (req, res) => {
       if (valid) {
         pool.query(queries.getAccount, [username], (error, results) => {
           if (error) throw error;
+          const tokens = functions.generateJWT(results.rows[0]);
           const message = {
-            token: functions.generateJWT(results.rows[0]),
+            token: tokens.token,
+            refreshToken: tokens.refreshToken,
           };
           res.status(200).json(message);
         });
@@ -346,7 +346,7 @@ const deleteAccount = async (req, res) => {
       });
     });
   } catch (error) {
-    res.status(403).json({ result: "Forbidden" });
+    res.status(406).json({ result: "Unauthorized" });
   }
 };
 
@@ -360,14 +360,34 @@ const getAccountById = async (req, res) => {
       if (error) throw error;
       if (results.rowCount == 0) {
         res.status(400).json({ result: `Account not found!` });
-      } else res.status(200).json({
-        username: results.rows[0].username,
-        firstName: results.rows[0].first_name,
-        lastName: results.rows[0].last_name
-      });
+      } else
+        res.status(200).json({
+          username: results.rows[0].username,
+          firstName: results.rows[0].first_name,
+          lastName: results.rows[0].last_name,
+        });
     });
   } catch (error) {
-    res.status(403).json({ result: "Forbidden" });
+    res.status(406).json({ result: "Unauthorized" });
+  }
+};
+
+const refreshToken = async (req, res) => {
+  if (req.body.refreshToken) {
+    const refreshToken = req.body.refreshToken;
+    let decode = await functions.verifyRefreshJWT(refreshToken);
+    if (decode) {
+      const tokens = functions.generateJWT(decode);
+      const message = {
+        token: tokens.token,
+        refreshToken: tokens.refreshToken,
+      };
+      res.status(200).json(message);
+    } else {
+      return res.status(406).json({ result: "Unauthorized" });
+    }
+  } else {
+    return res.status(406).json({ result: "Unauthorized" });
   }
 };
 
@@ -381,5 +401,6 @@ module.exports = {
   accountLogin,
   createAccount,
   deleteAccount,
-  getAccountById
+  getAccountById,
+  refreshToken,
 };
