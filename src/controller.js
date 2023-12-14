@@ -41,6 +41,7 @@ const addAccountCards = async (req, res) => {
     const card_name = req.body.name;
     const price = req.body.price;
     const quantity = req.body.quantity;
+    const image_uris = req.body.image_uris;
 
     if (price == null) {
       res.status(400).json({
@@ -81,7 +82,7 @@ const addAccountCards = async (req, res) => {
           case 0:
             pool.query(
               queries.addAccountCards,
-              [account_id, scry_id, card_name, price, quantity],
+              [account_id, scry_id, card_name, price, quantity, image_uris],
               (error) => {
                 if (error) throw error;
                 pool.query(
@@ -147,6 +148,7 @@ const updateAccountCards = async (req, res) => {
     const card_name = req.body.name;
     const price = req.body.price;
     const quantity = req.body.quantity;
+    const image_uris = req.body.image_uris;
 
     pool.query(
       queries.getAccountCardsId,
@@ -158,7 +160,7 @@ const updateAccountCards = async (req, res) => {
         else {
           pool.query(
             queries.updateAccountCards,
-            [account_id, scry_id, card_name, price, quantity],
+            [account_id, scry_id, card_name, price, quantity, image_uris],
             (error) => {
               if (error) throw error;
               pool.query(
@@ -192,6 +194,7 @@ const patchAccountCards = async (req, res) => {
     const card_name = req.body.card_name ? req.body.card_name : null;
     const price = req.body.price ? req.body.price : null;
     const quantity = req.body.quantity ? req.body.quantity : null;
+    const image_uris = req.body.image_uris ? req.body.image_uris : null
 
     pool.query(
       queries.getAccountCardsId,
@@ -203,7 +206,7 @@ const patchAccountCards = async (req, res) => {
         else {
           pool.query(
             queries.patchAccountCards,
-            [account_id, scry_id, card_name, price, quantity],
+            [account_id, scry_id, card_name, price, quantity, image_uris],
             (error) => {
               if (error) throw error;
               pool.query(
