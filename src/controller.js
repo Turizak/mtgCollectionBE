@@ -250,7 +250,7 @@ const updateAccountCardsPrices = async (req, res) => {
 
           pool.query(
             queries.patchAccountCards,
-            [decode.account_id, res.scry_id, null, scryData.prices.usd, null],
+            [decode.account_id, res.scry_id, null, scryData.prices.usd, null, null],
             (error) => {
               if (error) throw error;
             }
