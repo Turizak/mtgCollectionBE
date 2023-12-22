@@ -10,6 +10,7 @@ const getAccountCards = async (req, res) => {
     let decode = await functions.verifyJWT(token);
     const account_id = decode.account_id;
     const card_name = req.query.name ? req.query.name : null;
+    const id = req.query.id ? req.query.id : null;
     if (card_name != null) {
       pool.query(
         queries.getAccountCardsName,
@@ -18,6 +19,17 @@ const getAccountCards = async (req, res) => {
           if (error) throw error;
           if (results.rowCount == 0)
             res.status(400).json({ result: `Card: ${card_name} not found!` });
+          else res.status(200).json(results.rows[0]);
+        }
+      );
+    } else if (id != null) {
+      pool.query(
+        queries.getAccountCardsId,
+        [account_id, id],
+        (error, results) => {
+          if (error) throw error;
+          if (results.rowCount == 0)
+            res.status(400).json({ result: `Card: ${id} not found!` });
           else res.status(200).json(results.rows[0]);
         }
       );
@@ -194,7 +206,7 @@ const patchAccountCards = async (req, res) => {
     const card_name = req.body.card_name ? req.body.card_name : null;
     const price = req.body.price ? req.body.price : null;
     const quantity = req.body.quantity ? req.body.quantity : null;
-    const image_uris = req.body.image_uris ? req.body.image_uris : null
+    const image_uris = req.body.image_uris ? req.body.image_uris : null;
 
     pool.query(
       queries.getAccountCardsId,
@@ -250,7 +262,14 @@ const updateAccountCardsPrices = async (req, res) => {
 
           pool.query(
             queries.patchAccountCards,
-            [decode.account_id, res.scry_id, null, scryData.prices.usd, null, null],
+            [
+              decode.account_id,
+              res.scry_id,
+              null,
+              scryData.prices.usd,
+              null,
+              null,
+            ],
             (error) => {
               if (error) throw error;
             }
