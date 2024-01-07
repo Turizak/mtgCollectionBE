@@ -13,7 +13,8 @@
     "pg": "^8.8.0"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "deploy": "fly deploy -a mtgbe"
   },
   "author": "rk",
   "license": "ISC",
