@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const axios = require("axios");
-const pool = require("../db");
+const pool = require("../db").pool;
 const queries = require("./queries");
 const functions = require("./functions");
 
