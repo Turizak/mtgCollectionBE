@@ -1,11 +1,12 @@
 const getAccount =
-  "SELECT account_id, first_name, last_name, username FROM account WHERE username = $1";
+  "SELECT account_id, username FROM account WHERE username = $1";
 const getAccountById =
-  "SELECT account_id, first_name, last_name, username FROM account WHERE account_id = $1";
-const checkAccountExist = "SELECT * FROM account WHERE username = $1";
+  "SELECT account_id, username FROM account WHERE account_id = $1";
+const checkAccountExistUsername = "SELECT * FROM account WHERE username = $1";
+const checkAccountExistEmail = "SELECT * FROM account WHERE email = $1";
 const checkPassword = "SELECT password FROM account WHERE username = $1";
 const createAccount =
-  "INSERT INTO account (first_name, last_name, username, password) VALUES ($1, $2, $3, $4)";
+  "INSERT INTO account (first_name, last_name, email, username, password) VALUES ($1, $2, $3, $4, $5)";
 const getAccountCards = "SELECT * FROM cards where account_id = $1";
 const getAccountCardsName =
   "SELECT * FROM cards WHERE account_id = $1 AND card_name = $2";
@@ -36,7 +37,8 @@ module.exports = {
   updateAccountCardsQuantity,
   patchAccountCards,
   getAccount,
-  checkAccountExist,
+  checkAccountExistUsername,
+  checkAccountExistEmail,
   createAccount,
   checkPassword,
   deleteAccount,

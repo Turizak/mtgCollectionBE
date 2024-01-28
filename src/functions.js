@@ -14,8 +14,6 @@ const generateJWT = (account) => {
   let data = {
     time: moment.now().valueOf(),
     account_id: account.account_id,
-    first_name: account.first_name,
-    last_name: account.last_name,
   };
 
   const token = jwt.sign(data, jwtSecretKey, { expiresIn: "10m" });
