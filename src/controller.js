@@ -295,7 +295,7 @@ const accountLogin = async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  pool.query(queries.checkAccountExist, [username], (error, results) => {
+  pool.query(queries.checkAccountExistUsername, [username], (error, results) => {
     if (error) throw error;
     if (results.rowCount == 0) {
       res.status(400).json({ result: `Account not found!` });
@@ -328,28 +328,79 @@ const accountLogin = async (req, res) => {
 };
 
 const createAccount = async (req, res) => {
-  const username = req.body.username;
-  let password = req.body.password;
-  const first_name = req.body.firstName;
-  const last_name = req.body.lastName;
+  let first_name, last_name, email, username, password;
+
+  if (req.body.username) {
+    username = req.body.username;
+  } else {
+    res.status(400).json({
+      result: "Account creation failed. Please provide a username!",
+    });
+    return;
+  }
+
+  if (req.body.email) {
+    email = req.body.email;
+  } else {
+    res.status(400).json({
+      result: "Account creation failed. Please provide a valid email address!",
+    });
+    return;
+  }
+
+  if (req.body.password) {
+    password = req.body.password;
+  } else {
+    res.status(400).json({
+      result: "Account creation failed. Please provide a password!",
+    });
+    return;
+  }
+
+  req.body.firstName ? (first_name = req.body.firstName) : (first_name = null);
+  req.body.lastName ? (last_name = req.body.lastName) : (last_name = null);
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isValidEmail = emailRegex.test(email);
+
+  if (!isValidEmail) {
+    res.status(400).json({
+      result: "Account creation failed. Please check email address format!",
+    });
+    return;
+  }
+
+  pool.query(
+    queries.checkAccountExistUsername,
+    [username],
+    (error, results) => {
+      if (error) throw error;
+      if (results.rowCount != 0)
+        res.status(400).json({
+          result: "Account creation failed. Please try a different username!",
+        });
+    }
+  );
+
+  pool.query(queries.checkAccountExistEmail, [email], (error, results) => {
+    if (error) throw error;
+    if (results.rowCount != 0)
+      res.status(400).json({
+        result:
+          "Account creation failed. Please try a different email address!",
+      });
+  });
 
   password = await functions.generatePassword(password);
 
-  pool.query(queries.checkAccountExist, [username], (error, results) => {
-    if (error) throw error;
-    if (results.rowCount != 0)
-      res.status(400).json({ result: "Invalid account name." });
-    else {
-      pool.query(
-        queries.createAccount,
-        [first_name, last_name, username, password],
-        (error) => {
-          if (error) throw error;
-          res.status(202).json({ result: "Account created successfully!" });
-        }
-      );
+  pool.query(
+    queries.createAccount,
+    [first_name, last_name, email, username, password],
+    (error) => {
+      if (error) throw error;
+      res.status(202).json({ result: "Account created successfully!" });
     }
-  });
+  );
 };
 
 const deleteAccount = async (req, res) => {

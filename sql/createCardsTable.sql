@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS cards
     scry_id character varying NOT NULL,
     card_name character varying NOT NULL,
     price numeric NOT NULL,
-    quantity integer NOT NULL
+    quantity integer NOT NULL,
+    image_uris jsonb NULL
 );
